@@ -13,6 +13,6 @@ namespace OrderingSystem.Core.Services.Contract
         Task<IReadOnlyList<Order>> GetAllOrdersAsync();
         Task<Order?> GetOrderByIdAsync(int orderId);
         Task<IReadOnlyList<Order>> GetOrdersByCustomerIdAsync(string customerId);
-        Task<bool> DeleteOrderAsync(int orderId, string customerId);
+        Task<bool> DeleteOrderAsync(int orderId, string customerId, bool isAdmin);
     }
 }

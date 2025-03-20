@@ -92,10 +92,12 @@ namespace OrderingSystem.API.Controllers
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdmin = User.IsInRole("Admin"); // Check if the user is an admin
+
             if (string.IsNullOrEmpty(customerId))
                 return Unauthorized(new ApiResponse(401, "Unauthorized user"));
 
-            var result = await _orderService.DeleteOrderAsync(id, customerId);
+            var result = await _orderService.DeleteOrderAsync(id, customerId, isAdmin);
             if (!result)
                 return NotFound(new ApiResponse(404, "Order not found or does not belong to the customer"));
 

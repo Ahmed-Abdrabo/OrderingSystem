@@ -50,14 +50,29 @@ namespace OrderingSystem.Service
             return order;
         }
 
-        public async Task<bool> DeleteOrderAsync(int orderId, string customerId)
+        public async Task<bool> DeleteOrderAsync(int orderId, string customerId, bool isAdmin)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId);
-            if (order == null || order.CustomerId != customerId)
+            var order = await _orderRepository.GetByIdAsync(orderId, "OrderItems");
+            if (order == null)
                 return false;
+
+            // Allow deletion only if the user is an admin or owns the order
+            if (!isAdmin && order.CustomerId != customerId)
+                return false;
+
+            // Restore product stock
+            foreach (var item in order.OrderItems)
+            {
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                if (product != null)
+                {
+                    product.Stock += item.Quantity;
+                }
+            }
 
             _orderRepository.Delete(order);
             await _orderRepository.SaveChangesAsync();
+
             return true;
         }
 
