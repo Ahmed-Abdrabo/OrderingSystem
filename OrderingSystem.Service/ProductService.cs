@@ -18,7 +18,7 @@ namespace OrderingSystem.Service
 
         public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
         {
-            return await _productRepository.GetAllAsync();
+            return await _productRepository.GetAllAsync(p=>p.Stock>0);
         }
 
         public async Task<Product?> GetProductByIdAsync(int id)

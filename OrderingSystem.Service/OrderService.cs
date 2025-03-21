@@ -78,7 +78,7 @@ namespace OrderingSystem.Service
 
         public async Task<IReadOnlyList<Order>> GetAllOrdersAsync()
         {
-            return await _orderRepository.GetAllAsync("OrderItems,Customer");
+            return await _orderRepository.GetAllAsync(includeProperties:"OrderItems,Customer");
         }
 
         public async Task<Order?> GetOrderByIdAsync(int orderId)

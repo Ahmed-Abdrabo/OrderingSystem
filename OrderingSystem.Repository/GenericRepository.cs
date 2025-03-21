@@ -3,7 +3,7 @@ using OrderingSystem.Core.Repositories.Contract;
 using OrderingSystem.Repository.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Linq.Expressions;
 
 namespace OrderingSystem.Repository
 {
@@ -17,10 +17,13 @@ namespace OrderingSystem.Repository
            
 
         }
-        public async Task<IReadOnlyList<T>> GetAllAsync(string? includeProperties = null)
+        public async Task<IReadOnlyList<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
-            IQueryable<T> query = _dbContext.Set<T>(); 
-
+            IQueryable<T> query = _dbContext.Set<T>();  
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProp in includeProperties
