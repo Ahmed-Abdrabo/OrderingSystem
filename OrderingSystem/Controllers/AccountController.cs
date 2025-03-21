@@ -78,7 +78,8 @@ namespace OrderingSystem.API.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest(new ApiResponse(400, "Error creating user"));
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new ApiValidationErrorResponse { Errors = errors });
             }
 
             // Assign "Customer" role to the newly created user
